@@ -1,7 +1,13 @@
+require('./models/user')
 const express = require('express')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+const authRoutes = require('./routes/authRoutes')
 
 const app = express()
+
+app.use(bodyParser.json())
+app.use(authRoutes)
 
 const mongoURI = 
 'mongodb+srv://admin:passwordpassword@tracker.no5lg.mongodb.net/<dbname>?retryWrites=true&w=majority'
@@ -16,7 +22,6 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('Error', (err) => {
     console.error('Error connecting to mongo', err)
 })
-
 
 app.get('/', (req, res) => {
     res.send('Hey there!')
