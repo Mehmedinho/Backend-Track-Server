@@ -12,4 +12,4 @@ const userSchema = new mongose.Schema({
     }
 })
 
-mongose.model('user', userSchema)
+mongose.model('User', userSchema)

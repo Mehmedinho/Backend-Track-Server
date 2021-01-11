@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const authRoutes = require('./routes/authRoutes')
+const requireAuth = require('./middlewares/requireAuth')
 
 const app = express()
 
@@ -10,21 +11,23 @@ app.use(bodyParser.json())
 app.use(authRoutes)
 
 const mongoURI = 
-'mongodb+srv://admin:passwordpassword@tracker.no5lg.mongodb.net/<dbname>?retryWrites=true&w=majority'
+'mongodb+srv://admin:passwordpassword@tracker.no5lg.mongodb.net/<dbname>'
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 
 })
 mongoose.connection.on('connected', () => {
     console.log('Connected to mongo instance')
 })
-mongoose.connection.on('Error', (err) => {
+mongoose.connection.on('error', err => {
     console.error('Error connecting to mongo', err)
 })
 
-app.get('/', (req, res) => {
-    res.send('Hey there!')
+//Users can only access if they have invalid token 
+app.get('/', requireAuth, (req, res) => {
+    res.send(`Your email: ${req.user.email}`)
 })
 
 app.listen(3100, () => {
